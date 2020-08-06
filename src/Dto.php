@@ -8,20 +8,26 @@ use RuntimeException;
 
 abstract class Dto
 {
-    private $data;
+    private $rawData;
 
-    public function __construct(array $data = [])
+    const LOAD_ALL_PARAMS     = 0b001;
+    const LOAD_PARTIAL_PARAMS = 0b010;
+
+    public function __construct(array $data = [], int $flags = self::LOAD_ALL_PARAMS)
     {
-        $this->load($data);
+        $this->load($data, $flags);
         $this->validate();
+
+        $this->rawData = $data;
     }
 
     protected function validate(): void {}
 
-    private function load(array $data): void
+    private function load(array $data, int $flags): void
     {
-        $reflection = new ReflectionClass(get_called_class());
-        $defaults   = $reflection->getDefaultProperties();
+        $reflection  = new ReflectionClass(get_called_class());
+        $defaults    = $reflection->getDefaultProperties();
+        $partialLoad = $flags & self::LOAD_PARTIAL_PARAMS;
 
         foreach ($reflection->getProperties() as $property) {
 
@@ -35,8 +41,12 @@ abstract class Dto
                 $value = $defaults[$name];
             }
 
+            elseif ($partialLoad) {
+                continue;
+            }
+
             else {
-                throw new RuntimeException("The value for the command \"{$name}\" attribute is missing.");
+                throw new RuntimeException("The value for the command parameter \"{$name}\" is missing.");
             }
 
             if ($property->hasType() && $value) {
@@ -45,8 +55,6 @@ abstract class Dto
 
             $this->{$name} = $value;
         }
-
-        $this->data = $data;
     }
 
     private function cast(&$value, ReflectionNamedType $type): void
@@ -62,8 +70,20 @@ abstract class Dto
         }
     }
 
+    /**
+     * Is this parameter initialized?
+     */
+    public function has(string $param): bool
+    {
+        return array_key_exists($param, $this->rawData);
+    }
+
     public function __get(string $name)
     {
-        return $this->$name;
+        if ($this->has($name)) {
+            return $this->$name;
+        }
+
+        throw new RuntimeException("The command parameter \"{$name}\" has not been initialized.");
     }
 }

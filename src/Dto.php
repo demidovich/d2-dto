@@ -10,10 +10,9 @@ abstract class Dto
 {
     private $rawData;
 
-    const LOAD_ALL_PARAMS     = 0b001;
-    const LOAD_PARTIAL_PARAMS = 0b010;
+    const PARTIAL = 0b001;
 
-    public function __construct(array $data = [], int $flags = self::LOAD_ALL_PARAMS)
+    public function __construct(array $data = [], int $flags = 0)
     {
         $this->load($data, $flags);
         $this->validate();
@@ -27,7 +26,7 @@ abstract class Dto
     {
         $reflection  = new ReflectionClass(get_called_class());
         $defaults    = $reflection->getDefaultProperties();
-        $partialLoad = $flags & self::LOAD_PARTIAL_PARAMS;
+        $partialLoad = $flags & self::PARTIAL;
 
         foreach ($reflection->getProperties() as $property) {
 

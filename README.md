@@ -18,4 +18,27 @@ $command = new CreateBookCommand([
     'name' => 'Анна Каренина',
     'author_id' => 10,
 ]);
+
+$command = new CreateBookCommand([
+    'name' => 'Анна Каренина',
+], \D2\Dto::PARTIAL);
+```
+
+Example of usage with partial data.
+
+```php
+class CreateBookCommand extends Dto
+{
+    private BookId   $id;
+    private BookName $name;
+    private AuthorId $author_id;
+}
+
+$command = new CreateBookCommand([
+    'name' => 'Анна Каренина',
+], \D2\Dto::PARTIAL);
+
+if ($command->has('name')) {
+    $book->rename($command->name);
+}
 ```

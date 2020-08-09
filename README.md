@@ -8,13 +8,11 @@ This is a simple base class of data transfer object. The class constructor casts
 ```php
 class CreateBookCommand extends Dto
 {
-    private BookId   $id;
     private BookName $name;
     private AuthorId $author_id;
 }
 
 $command = new CreateBookCommand([
-    'id' => 1,
     'name' => 'Анна Каренина',
     'author_id' => 10,
 ]);
@@ -27,14 +25,13 @@ $command = new CreateBookCommand([
 Example of usage with partial data.
 
 ```php
-class CreateBookCommand extends Dto
+class UpdateBookCommand extends Dto
 {
-    private BookId   $id;
     private BookName $name;
     private AuthorId $author_id;
 }
 
-$command = new CreateBookCommand([
+$command = new UpdateBookCommand([
     'name' => 'Анна Каренина',
 ], \D2\Dto::PARTIAL);
 

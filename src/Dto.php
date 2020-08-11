@@ -20,6 +20,16 @@ abstract class Dto
         $this->rawData = $data;
     }
 
+    /**
+     * Partial data loading
+     * @param array $data
+     * @return static
+     */
+    public static function partial(array $data = []): self
+    {
+        return new static($data, self::PARTIAL);
+    }
+
     protected function validate(): void {}
 
     private function load(array $data, int $flags): void

@@ -67,4 +67,17 @@ class CommandTest extends TestCase
 
         $string = $command->string;
     }
+
+    public function test_partial_static_init()
+    {
+        $data = [
+            'integer' => 100,
+        ];
+
+        $command = ExampleCommand::partial($data);
+
+        $this->assertTrue($command->has('integer'));
+        $this->assertFalse($command->has('string'));
+        $this->assertEquals(100, $command->integer);
+    }
 }

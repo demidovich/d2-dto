@@ -22,7 +22,7 @@ $command = new CreateBookCommand([
 ], \D2\Dto::PARTIAL);
 ```
 
-Example of usage with partial data.
+Example of usage with partial data load.
 
 ```php
 class UpdateBookCommand extends Dto
@@ -31,9 +31,9 @@ class UpdateBookCommand extends Dto
     private AuthorId $author_id;
 }
 
-$command = new UpdateBookCommand([
+$command = UpdateBookCommand::partial([
     'name' => 'Анна Каренина',
-], \D2\Dto::PARTIAL);
+]);
 
 if ($command->has('name')) {
     $book->rename($command->name);
